@@ -36,7 +36,6 @@ export function AccountMenu() {
           <span>Profile</span>
         </DropdownMenuItem>
 
-        {/* Sign out */}
         <DropdownMenuItem className="text-rose-600 dark:text-rose-400">
           <LogOut className="mr-2 h-4 w-4" />
           <span>Sign out</span>
