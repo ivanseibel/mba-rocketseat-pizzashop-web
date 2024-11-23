@@ -13,7 +13,7 @@ export function AuthLayout() {
           &copy; {new Date().getFullYear()} pizza.shop All rights reserved.
         </footer>
       </div>
-      <div className="flex flex-col items-center justify-center">
+      <div className="relative flex flex-col items-center justify-center">
         <Outlet />
       </div>
     </div>

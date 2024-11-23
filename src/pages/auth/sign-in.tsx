@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Helmet } from "react-helmet-async";
 import { useForm } from "react-hook-form";
+import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { z } from "zod";
 
@@ -10,14 +11,14 @@ const signInSchema = z.object({
   email: z.string().email(),
 });
 
-type SignInForm = z.infer<typeof signInSchema>;
+type SignInFormData = z.infer<typeof signInSchema>;
 
 export function SignIn() {
   const {
     register,
     handleSubmit,
     formState: { isSubmitting },
-  } = useForm<SignInForm>();
+  } = useForm<SignInFormData>();
 
   const handleSignIn = async (data: any) => {
     try {
@@ -43,6 +44,10 @@ export function SignIn() {
         <title>Sign In</title>
       </Helmet>
       <div className="p-8">
+        <Button asChild className="absolute top-8 right-8" variant="ghost">
+          <Link to="/sign-up">New to pizza.shop? Sign up</Link>
+        </Button>
+
         <div className="flex w-[350px] flex-col justify-center gap-6">
           <div className="flex flex-col gap-2 text-center">
             <h1 className="font-semibol text-2xl tracking-tighter">
@@ -59,7 +64,7 @@ export function SignIn() {
             </div>
 
             <Button className="w-full" type="submit" disabled={isSubmitting}>
-              Sign In
+              Sign in
             </Button>
           </form>
         </div>
