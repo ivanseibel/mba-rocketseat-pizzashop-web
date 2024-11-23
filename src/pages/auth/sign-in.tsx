@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Helmet } from "react-helmet-async";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 
 const signInSchema = z.object({
@@ -19,8 +20,21 @@ export function SignIn() {
   } = useForm<SignInForm>();
 
   const handleSignIn = async (data: any) => {
-    console.log(data);
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    try {
+      console.log(data);
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      toast.success("A magic link has been sent to your email", {
+        action: {
+          label: "Resend",
+          onClick: () => {
+            handleSignIn(data);
+          },
+        },
+      });
+    } catch (error) {
+      console.error("Error during sign-in:", error);
+      toast.error("Failed to send magic link. Please try again.");
+    }
   };
 
   return (
