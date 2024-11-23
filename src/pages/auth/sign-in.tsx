@@ -2,8 +2,27 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Helmet } from "react-helmet-async";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+
+const signInSchema = z.object({
+  email: z.string().email(),
+});
+
+type SignInForm = z.infer<typeof signInSchema>;
 
 export function SignIn() {
+  const {
+    register,
+    handleSubmit,
+    formState: { isSubmitting },
+  } = useForm<SignInForm>();
+
+  const handleSignIn = async (data: any) => {
+    console.log(data);
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+  };
+
   return (
     <>
       <Helmet>
@@ -19,13 +38,13 @@ export function SignIn() {
               Track your orders through the partner dashboard
             </p>
           </div>
-          <form className="space-y-4">
+          <form className="space-y-4" onSubmit={handleSubmit(handleSignIn)}>
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
-              <Input type="email" id="email" />
+              <Input type="email" id="email" {...register("email")} />
             </div>
 
-            <Button className="w-full" type="submit">
+            <Button className="w-full" type="submit" disabled={isSubmitting}>
               Sign In
             </Button>
           </form>
