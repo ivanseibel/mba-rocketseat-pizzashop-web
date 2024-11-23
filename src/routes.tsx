@@ -26,8 +26,6 @@ export const router = createBrowserRouter([
       },
     ],
   },
-
-  // Add a catch-all route
   {
     path: "*",
     element: <NotFound />,
