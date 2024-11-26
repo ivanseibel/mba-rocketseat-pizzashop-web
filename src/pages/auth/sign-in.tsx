@@ -1,6 +1,8 @@
+import { signIn } from "@/api/sign-in";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useMutation } from "@tanstack/react-query";
 import { Helmet } from "react-helmet-async";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
@@ -20,10 +22,14 @@ export function SignIn() {
     formState: { isSubmitting },
   } = useForm<SignInFormData>();
 
+  const { mutateAsync: authenticate } = useMutation({
+    mutationFn: signIn,
+  });
+
   const handleSignIn = async (data: any) => {
     try {
       console.log(data);
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      await authenticate(data);
       toast.success("A magic link has been sent to your email", {
         action: {
           label: "Resend",
