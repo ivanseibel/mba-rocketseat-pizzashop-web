@@ -4,6 +4,6 @@ export interface SignInPayload {
   email: string;
 }
 
-export async function signIn(payload: SignInPayload) {
-  await api.post("/authenticate", payload);
+export async function signIn({ email }: SignInPayload) {
+  await api.post("/authenticate", { email });
 }
