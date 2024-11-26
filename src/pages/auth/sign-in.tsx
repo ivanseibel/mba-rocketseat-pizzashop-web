@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { useMutation } from "@tanstack/react-query";
 import { Helmet } from "react-helmet-async";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import { z } from "zod";
 
@@ -16,20 +16,26 @@ const signInSchema = z.object({
 type SignInFormData = z.infer<typeof signInSchema>;
 
 export function SignIn() {
+  const [searchParams] = useSearchParams();
+
   const {
     register,
     handleSubmit,
     formState: { isSubmitting },
-  } = useForm<SignInFormData>();
+  } = useForm<SignInFormData>({
+    defaultValues: {
+      email: searchParams.get("email") ?? "",
+    },
+  });
 
-  const { mutateAsync: authenticate } = useMutation({
+  const { mutateAsync } = useMutation({
     mutationFn: signIn,
   });
 
   const handleSignIn = async (data: any) => {
     try {
       console.log(data);
-      await authenticate(data);
+      await mutateAsync({ email: data.email });
       toast.success("A magic link has been sent to your email", {
         action: {
           label: "Resend",
