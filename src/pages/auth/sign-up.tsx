@@ -1,6 +1,8 @@
+import { signUp } from "@/api/sign-up";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useMutation } from "@tanstack/react-query";
 import { Helmet } from "react-helmet-async";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
@@ -10,7 +12,7 @@ import { z } from "zod";
 const signUpSchema = z.object({
   restaurantName: z.string().min(3),
   managerName: z.string().min(3),
-  phoneNumber: z.string().min(7),
+  phone: z.string().min(7),
   email: z.string().email(),
 });
 
@@ -25,15 +27,24 @@ export function SignUp() {
     reset,
   } = useForm<SignUpFormData>();
 
+  const { mutateAsync } = useMutation({
+    mutationFn: signUp,
+  });
+
   const handleSignUp = async (data: any) => {
     try {
       console.log(data);
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      await mutateAsync({
+        restaurantName: data.restaurantName,
+        managerName: data.managerName,
+        phone: data.phone,
+        email: data.email,
+      });
       toast.success("Your account was created!", {
         action: {
           label: "Go to sign in",
           onClick: () => {
-            navigate("/sign-in");
+            navigate("/sign-in?email=" + data.email);
           },
         },
         duration: 5000,
@@ -88,8 +99,8 @@ export function SignUp() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="phoneNumber">Phone Number</Label>
-              <Input type="tel" id="phoneNumber" {...register("phoneNumber")} />
+              <Label htmlFor="phone">Phone Number</Label>
+              <Input type="tel" id="phone" {...register("phone")} />
             </div>
 
             <Button className="w-full" type="submit" disabled={isSubmitting}>
