@@ -7,10 +7,14 @@ export function NotFound() {
       <Helmet>
         <title>Page Not Found</title>
       </Helmet>
-      <div style={{ textAlign: "center", marginTop: "50px" }}>
-        <h1>404 - Page Not Found</h1>
-        <p>Sorry, the page you are looking for does not exist.</p>
-        <Link to="/">Go back to Home</Link>
+      <div className="flex h-screen flex-col items-center justify-center gap-2">
+        <h1 className="font-bold text-4xl">404 - Page Not Found</h1>
+        <p className="text-accent-foreground">
+          Sorry, the page you are looking for does not exist.
+        </p>
+        <Link className="text-sky-500 dark:text-sky-400" to="/">
+          Go back to Home
+        </Link>
       </div>
     </>
   );
