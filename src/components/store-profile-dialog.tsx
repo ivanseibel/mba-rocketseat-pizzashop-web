@@ -1,11 +1,12 @@
-import { GetRestaurantResponse, getRestaurant } from "@/api/get-restaurant";
-import { updateProfile } from "@/api/update-profile";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import { queryClient } from "../lib/react-query";
+
+import { GetRestaurantResponse, getRestaurant } from "@/api/get-restaurant";
+import { updateProfile } from "@/api/update-profile";
+
 import { Button } from "./ui/button";
 import {
   DialogClose,
@@ -21,21 +22,25 @@ import { Textarea } from "./ui/textarea";
 
 const storeProfileSchema = z.object({
   name: z.string().min(1),
-  description: z.string(),
+  description: z.string().nullable(),
 });
 
-type StoreProfileFormValues = z.infer<typeof storeProfileSchema>;
+type StoreProfileSchema = z.infer<typeof storeProfileSchema>;
 
 export function StoreProfileDialog() {
   const queryClient = useQueryClient();
 
   const { data: restaurant } = useQuery({
-    queryFn: getRestaurant,
     queryKey: ["restaurant"],
+    queryFn: getRestaurant,
     staleTime: Infinity,
   });
 
-  const form = useForm<StoreProfileFormValues>({
+  const {
+    register,
+    handleSubmit,
+    formState: { isSubmitting },
+  } = useForm<StoreProfileSchema>({
     resolver: zodResolver(storeProfileSchema),
     values: {
       name: restaurant?.name ?? "",
@@ -45,80 +50,85 @@ export function StoreProfileDialog() {
 
   const { mutateAsync: updateProfileFn } = useMutation({
     mutationFn: updateProfile,
-    onSuccess: (_, { name, description }) => {
-      const cached = queryClient.getQueryData<GetRestaurantResponse>([
-        "restaurant",
-      ]);
+    onMutate({ description, name }) {
+      const { cached } = updateRestaurantCache({ description, name });
 
-      if (cached) {
-        queryClient.setQueryData<GetRestaurantResponse>(["restaurant"], {
-          ...cached,
-          name,
-          description,
-        });
+      return { previousProfile: cached };
+    },
+    onError(_, __, context) {
+      if (context?.previousProfile) {
+        updateRestaurantCache(context.previousProfile);
       }
     },
   });
 
-  async function handleSubmit(values: StoreProfileFormValues) {
+  function updateRestaurantCache({ name, description }: StoreProfileSchema) {
+    const cached = queryClient.getQueryData<GetRestaurantResponse>([
+      "restaurant",
+    ]);
+
+    if (cached) {
+      queryClient.setQueryData<GetRestaurantResponse>(["restaurant"], {
+        ...cached,
+        name,
+        description,
+      });
+    }
+
+    return { cached };
+  }
+
+  async function handleUpdateProfile(data: StoreProfileSchema) {
     try {
       await updateProfileFn({
-        name: values.name,
-        description: values.description,
+        name: data.name,
+        description: data.description,
       });
-      toast.success("Store profile updated successfully.");
-    } catch (err) {
-      console.error(err);
-      toast.error("Failed to update store profile. Please try again.");
+
+      toast.success("Perfil atualizado com sucesso!");
+    } catch {
+      toast.error("Falha ao atualizar o perfil, tente novamente");
     }
   }
 
   return (
     <DialogContent>
       <DialogHeader>
-        <DialogTitle>Store Profile</DialogTitle>
+        <DialogTitle>Perfil da loja</DialogTitle>
         <DialogDescription>
-          Manage your store profile information visible to your customers.
+          Atualize as informações do seu estabelecimento visíveis ao seu cliente
         </DialogDescription>
       </DialogHeader>
 
-      <form onSubmit={form.handleSubmit(handleSubmit)}>
+      <form onSubmit={handleSubmit(handleUpdateProfile)}>
         <div className="space-y-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="name" className="text-right">
-              Name
+            <Label className="text-right" htmlFor="name">
+              Nome
             </Label>
-            <Input
-              className="col-span-3"
-              id="name"
-              {...form.register("name")}
-            />
+            <Input className="col-span-3" id="name" {...register("name")} />
           </div>
 
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="description" className="text-right">
-              Description
+            <Label className="text-right" htmlFor="description">
+              Descrição
             </Label>
             <Textarea
               className="col-span-3"
               id="description"
-              {...form.register("description")}
+              {...register("description")}
             />
           </div>
         </div>
 
         <DialogFooter>
           <DialogClose asChild>
-            <Button variant={"ghost"} type="button">
-              Cancel
+            <Button variant="ghost" type="button">
+              Cancelar
             </Button>
           </DialogClose>
-          <Button
-            variant={"default"}
-            type="submit"
-            disabled={form.formState.isSubmitting}
-          >
-            Save
+          <Button type="submit" variant="default" disabled={isSubmitting}>
+            Salvar
           </Button>
         </DialogFooter>
       </form>
