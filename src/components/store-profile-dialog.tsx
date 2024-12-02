@@ -1,10 +1,13 @@
 import { getRestaurant } from "@/api/get-restaurant";
+import { updateProfile } from "@/api/update-profile";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 import { Button } from "./ui/button";
 import {
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -26,6 +29,7 @@ export function StoreProfileDialog() {
   const { data: restaurant } = useQuery({
     queryFn: getRestaurant,
     queryKey: ["restaurant"],
+    staleTime: Infinity,
   });
 
   const form = useForm<StoreProfileFormValues>({
@@ -36,6 +40,23 @@ export function StoreProfileDialog() {
     },
   });
 
+  const { mutateAsync: updateProfileFn } = useMutation({
+    mutationFn: updateProfile,
+  });
+
+  async function handleSubmit(values: StoreProfileFormValues) {
+    try {
+      await updateProfileFn({
+        name: values.name,
+        description: values.description,
+      });
+      toast.success("Store profile updated successfully.");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to update store profile. Please try again.");
+    }
+  }
+
   return (
     <DialogContent>
       <DialogHeader>
@@ -45,7 +66,7 @@ export function StoreProfileDialog() {
         </DialogDescription>
       </DialogHeader>
 
-      <form>
+      <form onSubmit={form.handleSubmit(handleSubmit)}>
         <div className="space-y-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="name" className="text-right">
@@ -71,10 +92,16 @@ export function StoreProfileDialog() {
         </div>
 
         <DialogFooter>
-          <Button variant={"ghost"} type="button">
-            Cancel
-          </Button>
-          <Button variant={"default"} type="submit">
+          <DialogClose asChild>
+            <Button variant={"ghost"} type="button">
+              Cancel
+            </Button>
+          </DialogClose>
+          <Button
+            variant={"default"}
+            type="submit"
+            disabled={form.formState.isSubmitting}
+          >
             Save
           </Button>
         </DialogFooter>
