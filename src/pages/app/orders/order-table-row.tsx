@@ -1,10 +1,22 @@
+import { OrderStatus } from "@/components/order-status";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { TableCell, TableRow } from "@/components/ui/table";
+import { formatDistanceToNow } from "date-fns";
 import { ArrowRight, Search, X } from "lucide-react";
 import { OrderDetails } from "./order-details";
 
-export function OrderTableRow() {
+export interface OrderTableRowProps {
+  order: {
+    orderId: string;
+    createdAt: Date;
+    status: "pending" | "canceled" | "processing" | "delivering" | "delivered";
+    customerName: string;
+    total: number;
+  };
+}
+
+export function OrderTableRow({ order }: OrderTableRowProps) {
   return (
     <TableRow>
       <TableCell>
@@ -20,17 +32,25 @@ export function OrderTableRow() {
         </Dialog>
       </TableCell>
       <TableCell className="font-medium font-mono text-xs">
-        xxx-xxx-xxx
+        {order.orderId}
       </TableCell>
-      <TableCell className="text-muted-foreground">15 minutes ago</TableCell>
+      <TableCell className="text-muted-foreground">
+        {formatDistanceToNow(new Date(order.createdAt), { addSuffix: true })}
+      </TableCell>
       <TableCell>
-        <div className="flex items-center gap-2">
-          <span className="h-2 w-2 rounded-full bg-slate-400" />
-          <span className="font-medium text-muted-foreground">Pending</span>
-        </div>
+        <OrderStatus status={order.status} />
       </TableCell>
-      <TableCell className="font-medium">John Doe</TableCell>
-      <TableCell className="font-medium">$100.00</TableCell>
+      <TableCell className="font-medium">
+        <span>{order.customerName}</span>
+      </TableCell>
+      <TableCell className="font-medium">
+        <span>
+          {order.total.toLocaleString("en-US", {
+            style: "currency",
+            currency: "USD",
+          })}
+        </span>
+      </TableCell>
       <TableCell>
         <Button
           variant="outline"
