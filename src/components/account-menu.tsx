@@ -1,7 +1,9 @@
 import { getProfile } from "@/api/get-profile";
 import { getRestaurant } from "@/api/get-restaurant";
-import { useQuery } from "@tanstack/react-query";
+import { signOut } from "@/api/sign-ou";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Building, ChevronDown, LogOut } from "lucide-react";
+import { replace, useNavigate } from "react-router-dom";
 import { StoreProfileDialog } from "./store-profile-dialog";
 import { Button } from "./ui/button";
 import { Dialog, DialogTrigger } from "./ui/dialog";
@@ -16,6 +18,8 @@ import {
 import { Skeleton } from "./ui/skeleton";
 
 export function AccountMenu() {
+  const navigate = useNavigate();
+
   const { data: profile, isLoading: isLoadingProfile } = useQuery({
     queryFn: getProfile,
     queryKey: ["profile"],
@@ -27,6 +31,13 @@ export function AccountMenu() {
     queryKey: ["restaurant"],
   });
 
+  const { mutateAsync: signOutFn, isPending: isSigningOut } = useMutation({
+    mutationFn: signOut,
+    onSuccess: () => {
+      navigate("/sign-in", { replace: true });
+    },
+  });
+
   return (
     <Dialog>
       <DropdownMenu>
@@ -35,7 +46,7 @@ export function AccountMenu() {
             variant="outline"
             className="flex select-none items-center gap-2"
           >
-            {isLoadingProfile ? (
+            {isLoadingRestaurant ? (
               <Skeleton className="h-4 w-40" />
             ) : (
               restaurant?.name
@@ -69,9 +80,15 @@ export function AccountMenu() {
             </DropdownMenuItem>
           </DialogTrigger>
 
-          <DropdownMenuItem className="text-rose-600 dark:text-rose-400">
-            <LogOut className="mr-2 h-4 w-4" />
-            <span>Sign out</span>
+          <DropdownMenuItem
+            asChild
+            className="text-rose-600 dark:text-rose-400"
+            disabled={isSigningOut}
+          >
+            <button className="w-full" onClick={() => signOutFn()}>
+              <LogOut className="mr-2 h-4 w-4" />
+              <span>Sign out</span>
+            </button>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
