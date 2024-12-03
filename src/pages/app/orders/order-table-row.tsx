@@ -4,6 +4,7 @@ import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { formatDistanceToNow } from "date-fns";
 import { ArrowRight, Search, X } from "lucide-react";
+import { useState } from "react";
 import { OrderDetails } from "./order-details";
 
 export interface OrderTableRowProps {
@@ -17,10 +18,12 @@ export interface OrderTableRowProps {
 }
 
 export function OrderTableRow({ order }: OrderTableRowProps) {
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+
   return (
     <TableRow>
       <TableCell>
-        <Dialog>
+        <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
           <DialogTrigger asChild>
             <Button variant="outline" size="xs">
               <Search className="h3 w-3" />
@@ -28,7 +31,7 @@ export function OrderTableRow({ order }: OrderTableRowProps) {
             </Button>
           </DialogTrigger>
 
-          <OrderDetails />
+          <OrderDetails orderId={order.orderId} open={isDetailsOpen} />
         </Dialog>
       </TableCell>
       <TableCell className="font-medium font-mono text-xs">
@@ -45,7 +48,7 @@ export function OrderTableRow({ order }: OrderTableRowProps) {
       </TableCell>
       <TableCell className="font-medium">
         <span>
-          {order.total.toLocaleString("en-US", {
+          {(order.total / 100).toLocaleString("en-US", {
             style: "currency",
             currency: "USD",
           })}
