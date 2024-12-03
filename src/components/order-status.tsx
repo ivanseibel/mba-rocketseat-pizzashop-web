@@ -10,7 +10,7 @@ interface OrderStatusProps {
 }
 
 const orderStatusMap = {
-  pending: "Not started",
+  pending: "Pending",
   canceled: "Canceled",
   processing: "Being prepared",
   delivering: "Out for delivery",
@@ -20,15 +20,13 @@ const orderStatusMap = {
 export function OrderStatus({ status }: OrderStatusProps) {
   return (
     <div className="flex items-center gap-2">
-      {/* <span className="h-2 w-2 rounded-full bg-slate-400" /> */}
-
       {status === "pending" && (
         <span className="h-2 w-2 rounded-full bg-slate-400" />
       )}
       {status === "canceled" && (
         <span className="h-2 w-2 rounded-full bg-rose-500" />
       )}
-      {["processing", "delivering", "delivered"].includes(status) && (
+      {["processing", "delivering"].includes(status) && (
         <span className="h-2 w-2 rounded-full bg-amber-500" />
       )}
       {status === "delivered" && (
