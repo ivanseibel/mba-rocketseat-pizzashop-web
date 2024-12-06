@@ -1,10 +1,15 @@
+import { cancelOrder } from "@/api/cancel-order";
+import { GetOrdersResponse } from "@/api/get-orders";
 import { OrderStatus } from "@/components/order-status";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { TableCell, TableRow } from "@/components/ui/table";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { formatDistanceToNow } from "date-fns";
 import { ArrowRight, Search, X } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
+import { queryClient } from "../../../lib/react-query";
 import { OrderDetails } from "./order-details";
 
 export interface OrderTableRowProps {
@@ -19,6 +24,40 @@ export interface OrderTableRowProps {
 
 export function OrderTableRow({ order }: OrderTableRowProps) {
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+  const queryClient = useQueryClient();
+
+  const { mutateAsync: cancelOrderFn, isPending } = useMutation({
+    mutationFn: cancelOrder,
+    onSuccess: async (_, { orderId }) => {
+      console.log("Order canceled successfully");
+      const ordersListCache = queryClient.getQueriesData<GetOrdersResponse>({
+        queryKey: ["orders"],
+      });
+
+      ordersListCache.forEach(([cacheKey, cacheData]) => {
+        if (!cacheData) return;
+
+        queryClient.setQueryData<GetOrdersResponse>(cacheKey, {
+          ...cacheData,
+          orders: cacheData.orders.map((order) =>
+            order.orderId === orderId
+              ? { ...order, status: "canceled" }
+              : order,
+          ),
+        });
+      });
+    },
+  });
+
+  async function handleCancelOrder() {
+    try {
+      await cancelOrderFn({ orderId: order.orderId });
+      toast.success("Order canceled successfully");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to cancel order");
+    }
+  }
 
   return (
     <TableRow>
@@ -69,6 +108,10 @@ export function OrderTableRow({ order }: OrderTableRowProps) {
           variant="ghost"
           size="xs"
           className="flex items-center justify-center"
+          disabled={
+            !["pending", "processing"].includes(order.status) || isPending
+          }
+          onClick={handleCancelOrder}
         >
           <X className="h-3 w-3" />
           Cancel
