@@ -34,7 +34,6 @@ export function SignIn() {
 
   const handleSignIn = async (data: any) => {
     try {
-      console.log(data);
       await mutateAsync({ email: data.email });
       toast.success("A magic link has been sent to your email", {
         action: {
