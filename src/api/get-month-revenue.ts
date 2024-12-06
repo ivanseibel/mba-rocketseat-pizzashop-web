@@ -10,7 +10,5 @@ export async function getMonthRevenue() {
     "/metrics/month-receipt",
   );
 
-  console.log("/metrics/month-receipt", response.data);
-
   return response.data;
 }
