@@ -1,7 +1,15 @@
+import { getMonthOrdersAmount } from "@/api/get-month-orders.amount";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useQuery } from "@tanstack/react-query";
 import { Utensils } from "lucide-react";
 
 export function MonthOrdersAmountCard() {
+  const { data: monthOrdersAmount } = useQuery({
+    queryKey: ["metrics", "month-orders-amount"],
+    queryFn: getMonthOrdersAmount,
+  });
+
   return (
     <Card>
       <CardHeader className="flex-row items-center justify-between space-y-0 pb-2">
@@ -12,11 +20,35 @@ export function MonthOrdersAmountCard() {
       </CardHeader>
 
       <CardContent className="space-y-1">
-        <span className="font-bold text-2xl tracking-tight">250</span>
-        <p className="text-muted-foreground text-xs">
-          <span className="text-emerald-500 dark:text-emerald-400">+3%</span>{" "}
-          compared to last month
-        </p>
+        {monthOrdersAmount ? (
+          <>
+            <span className="font-bold text-2xl tracking-tight">
+              {monthOrdersAmount.amount.toLocaleString("en-US")}
+            </span>
+            <p className="text-muted-foreground text-xs">
+              {monthOrdersAmount.diffFromLastMonth >= 0 ? (
+                <>
+                  <span className="text-emeral-500 dark:text-emerald-400">
+                    +{monthOrdersAmount.diffFromLastMonth}%
+                  </span>
+                  compared to last month
+                </>
+              ) : (
+                <>
+                  <span className="text-rose-500 dark:text-rose-400">
+                    {monthOrdersAmount.diffFromLastMonth}%
+                  </span>
+                  compared to last month
+                </>
+              )}
+            </p>
+          </>
+        ) : (
+          <>
+            <Skeleton className="h-8" />
+            <Skeleton className="h-4" />
+          </>
+        )}
       </CardContent>
     </Card>
   );
