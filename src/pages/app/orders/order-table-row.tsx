@@ -9,7 +9,6 @@ import { formatDistanceToNow } from "date-fns";
 import { ArrowRight, Search, X } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { queryClient } from "../../../lib/react-query";
 import { OrderDetails } from "./order-details";
 
 export interface OrderTableRowProps {
@@ -26,26 +25,27 @@ export function OrderTableRow({ order }: OrderTableRowProps) {
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const queryClient = useQueryClient();
 
+  function updateCacheData(orderId: string, newStatus: OrderStatus) {
+    const ordersListCache = queryClient.getQueriesData<GetOrdersResponse>({
+      queryKey: ["orders"],
+    });
+
+    ordersListCache.forEach(([cacheKey, cacheData]) => {
+      if (!cacheData) return;
+
+      queryClient.setQueryData<GetOrdersResponse>(cacheKey, {
+        ...cacheData,
+        orders: cacheData.orders.map((order) =>
+          order.orderId === orderId ? { ...order, status: newStatus } : order,
+        ),
+      });
+    });
+  }
+
   const { mutateAsync: cancelOrderFn, isPending } = useMutation({
     mutationFn: cancelOrder,
     onSuccess: async (_, { orderId }) => {
-      console.log("Order canceled successfully");
-      const ordersListCache = queryClient.getQueriesData<GetOrdersResponse>({
-        queryKey: ["orders"],
-      });
-
-      ordersListCache.forEach(([cacheKey, cacheData]) => {
-        if (!cacheData) return;
-
-        queryClient.setQueryData<GetOrdersResponse>(cacheKey, {
-          ...cacheData,
-          orders: cacheData.orders.map((order) =>
-            order.orderId === orderId
-              ? { ...order, status: "canceled" }
-              : order,
-          ),
-        });
-      });
+      updateCacheData(orderId, "canceled");
     },
   });
 
