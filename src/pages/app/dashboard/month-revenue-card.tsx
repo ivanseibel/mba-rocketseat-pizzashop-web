@@ -20,11 +20,6 @@ export function MonthRevenueCard() {
       </CardHeader>
 
       <CardContent className="space-y-1">
-        {/* <span className="font-bold text-2xl tracking-tight">$12,000</span>
-        <p className="text-muted-foreground text-xs">
-          <span className="text-emerald-500 dark:text-emerald-400">+12%</span>{" "}
-          compared to last month
-        </p> */}
         {monthRevenue ? (
           <>
             <span className="font-bold text-2xl tracking-tight">
