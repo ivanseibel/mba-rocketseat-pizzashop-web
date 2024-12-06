@@ -33,7 +33,6 @@ export function SignUp() {
 
   const handleSignUp = async (data: any) => {
     try {
-      console.log(data);
       await mutateAsync({
         restaurantName: data.restaurantName,
         managerName: data.managerName,
