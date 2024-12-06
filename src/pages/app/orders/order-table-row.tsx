@@ -1,4 +1,7 @@
+import { approveOrder } from "@/api/approve-order";
 import { cancelOrder } from "@/api/cancel-order";
+import { deliverOrder } from "@/api/deliver-order";
+import { dispatchOrder } from "@/api/dispatch-order";
 import { GetOrdersResponse } from "@/api/get-orders";
 import { OrderStatus } from "@/components/order-status";
 import { Button } from "@/components/ui/button";
@@ -42,20 +45,55 @@ export function OrderTableRow({ order }: OrderTableRowProps) {
     });
   }
 
-  const { mutateAsync: cancelOrderFn, isPending } = useMutation({
-    mutationFn: cancelOrder,
-    onSuccess: async (_, { orderId }) => {
-      updateCacheData(orderId, "canceled");
-    },
-  });
+  const { mutateAsync: cancelOrderAsync, isPending: isPendingCanceling } =
+    useMutation({
+      mutationFn: cancelOrder,
+      onSuccess: async (_, { orderId }) => {
+        updateCacheData(orderId, "canceled");
+      },
+    });
+
+  const { mutateAsync: approveOrderAsync, isPending: isPendingApproving } =
+    useMutation({
+      mutationFn: approveOrder,
+      onSuccess: async (_, { orderId }) => {
+        updateCacheData(orderId, "processing");
+      },
+    });
+
+  const { mutateAsync: dispatchOrderAsync, isPending: isPendingDispatching } =
+    useMutation({
+      mutationFn: dispatchOrder,
+      onSuccess: async (_, { orderId }) => {
+        updateCacheData(orderId, "delivering");
+      },
+    });
+
+  const { mutateAsync: deliverOrderAsync, isPending: isPendingDelivering } =
+    useMutation({
+      mutationFn: deliverOrder,
+      onSuccess: async (_, { orderId }) => {
+        updateCacheData(orderId, "delivered");
+      },
+    });
 
   async function handleCancelOrder() {
     try {
-      await cancelOrderFn({ orderId: order.orderId });
+      await cancelOrderAsync({ orderId: order.orderId });
       toast.success("Order canceled successfully");
     } catch (err) {
       console.error(err);
       toast.error("Failed to cancel order");
+    }
+  }
+
+  async function handleApproveOrder() {
+    try {
+      await approveOrderAsync({ orderId: order.orderId });
+      toast.success("Order approved successfully");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to approve order");
     }
   }
 
@@ -94,14 +132,44 @@ export function OrderTableRow({ order }: OrderTableRowProps) {
         </span>
       </TableCell>
       <TableCell>
-        <Button
-          variant="outline"
-          size="xs"
-          className="flex items-center justify-center"
-        >
-          <ArrowRight className="h-3 w-3" />
-          Approve
-        </Button>
+        {order.status === "pending" && (
+          <Button
+            variant="outline"
+            size="xs"
+            className="flex items-center justify-center"
+            disabled={isPendingApproving}
+            onClick={handleApproveOrder}
+          >
+            <ArrowRight className="h-3 w-3" />
+            Process
+          </Button>
+        )}
+
+        {order.status === "processing" && (
+          <Button
+            variant="outline"
+            size="xs"
+            className="flex items-center justify-center"
+            disabled={isPendingDispatching}
+            onClick={() => dispatchOrderAsync({ orderId: order.orderId })}
+          >
+            <ArrowRight className="h-3 w-3" />
+            Dispach
+          </Button>
+        )}
+
+        {order.status === "delivering" && (
+          <Button
+            variant="outline"
+            size="xs"
+            className="flex items-center justify-center"
+            disabled={isPendingDelivering}
+            onClick={() => deliverOrderAsync({ orderId: order.orderId })}
+          >
+            <ArrowRight className="h-3 w-3" />
+            Delivered
+          </Button>
+        )}
       </TableCell>
       <TableCell>
         <Button
@@ -109,7 +177,8 @@ export function OrderTableRow({ order }: OrderTableRowProps) {
           size="xs"
           className="flex items-center justify-center"
           disabled={
-            !["pending", "processing"].includes(order.status) || isPending
+            !["pending", "processing"].includes(order.status) ||
+            isPendingCanceling
           }
           onClick={handleCancelOrder}
         >
