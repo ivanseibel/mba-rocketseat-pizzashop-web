@@ -10,7 +10,5 @@ export async function getDayOrdersAmount() {
     "/metrics/day-orders-amount",
   );
 
-  console.log("/metrics/day-orders-amount", response.data);
-
   return response.data;
 }
