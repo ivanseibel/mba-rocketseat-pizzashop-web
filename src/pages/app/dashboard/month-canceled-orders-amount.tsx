@@ -1,6 +1,6 @@
 import { getMonthCanceledOrdersAmount } from "@/api/get-month-canceled-orders-amount";
+import { MetricCardSkeleton } from "@/components/metric-card-skeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
 import { useQuery } from "@tanstack/react-query";
 import { Utensils } from "lucide-react";
 
@@ -44,10 +44,7 @@ export function MonthCanceledOrdersAmountCard() {
             </p>
           </>
         ) : (
-          <>
-            <Skeleton className="h-8" />
-            <Skeleton className="h-4" />
-          </>
+          <MetricCardSkeleton />
         )}
       </CardContent>
     </Card>
