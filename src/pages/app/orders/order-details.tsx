@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/table";
 import { useQuery } from "@tanstack/react-query";
 import { formatDistanceToNow } from "date-fns";
+import { OrderDetailsSkeleton } from "./order-details-skeleton";
 
 interface OrderDetailsProps {
   orderId: string;
@@ -24,7 +25,7 @@ interface OrderDetailsProps {
 }
 
 export function OrderDetails({ orderId, open }: OrderDetailsProps) {
-  const { data: order } = useQuery({
+  const { data: order, isLoading: isLoadingOrderDetails } = useQuery({
     queryKey: ["order", orderId],
     queryFn: () => getOrderDetails({ orderId }),
     enabled: open,
@@ -38,6 +39,8 @@ export function OrderDetails({ orderId, open }: OrderDetailsProps) {
           Order details will be displayed here
         </DialogDescription>
       </DialogHeader>
+
+      {isLoadingOrderDetails && <OrderDetailsSkeleton />}
 
       {order && (
         <div className="space-y-6">
