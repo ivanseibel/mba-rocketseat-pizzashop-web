@@ -37,33 +37,40 @@ export function Pagination({
             variant="outline"
             className="h-8 w-8 p-0"
             disabled={pageIndex === 0}
+            aria-label="First page"
           >
             <ChevronsLeft className="h-4 w-4" />
             <span className="sr-only">First page</span>
           </Button>
+
           <Button
             onClick={() => onPageChange(pageIndex - 1)}
             variant="outline"
             className="h-8 w-8 p-0"
-            disabled={pageIndex === 0}
+            disabled={pageIndex === pages - 1}
+            aria-label="Previous page"
           >
             <ChevronLeft className="h-4 w-4" />
-            <span className="sr-only">Next page</span>
+            <span className="sr-only">Previous page</span>
           </Button>
+
           <Button
             onClick={() => onPageChange(pageIndex + 1)}
             variant="outline"
             className="h-8 w-8 p-0"
-            disabled={pageIndex === pages - 1}
+            disabled={pageIndex === pages + 1}
+            aria-label="Next page"
           >
             <ChevronRight className="h-4 w-4" />
-            <span className="sr-only">Previous page</span>
+            <span className="sr-only">Next page</span>
           </Button>
+
           <Button
             onClick={() => onPageChange(pages - 1)}
             variant="outline"
             className="h-8 w-8 p-0"
             disabled={pageIndex === pages - 1}
+            aria-label="Last page"
           >
             <ChevronsRight className="h-4 w-4" />
             <span className="sr-only">Last page</span>
