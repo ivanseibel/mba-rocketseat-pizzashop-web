@@ -3,7 +3,7 @@ import { getRestaurant } from "@/api/get-restaurant";
 import { signOut } from "@/api/sign-ou";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Building, ChevronDown, LogOut } from "lucide-react";
-import { replace, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { StoreProfileDialog } from "./store-profile-dialog";
 import { Button } from "./ui/button";
 import { Dialog, DialogTrigger } from "./ui/dialog";
