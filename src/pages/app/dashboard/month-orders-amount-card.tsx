@@ -31,14 +31,14 @@ export function MonthOrdersAmountCard() {
                   <span className="text-emeral-500 dark:text-emerald-400">
                     +{monthOrdersAmount.diffFromLastMonth}%
                   </span>
-                  compared to last month
+                  $ compared to last month
                 </>
               ) : (
                 <>
                   <span className="text-rose-500 dark:text-rose-400">
                     {monthOrdersAmount.diffFromLastMonth}%
                   </span>
-                  compared to last month
+                  $ compared to last month
                 </>
               )}
             </p>
