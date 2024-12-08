@@ -94,9 +94,9 @@ export function StoreProfileDialog() {
   return (
     <DialogContent>
       <DialogHeader>
-        <DialogTitle>Perfil da loja</DialogTitle>
+        <DialogTitle>Store profile</DialogTitle>
         <DialogDescription>
-          Atualize as informações do seu estabelecimento visíveis ao seu cliente
+          Update your store information visible to your customers
         </DialogDescription>
       </DialogHeader>
 
@@ -104,14 +104,14 @@ export function StoreProfileDialog() {
         <div className="space-y-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
             <Label className="text-right" htmlFor="name">
-              Nome
+              Name
             </Label>
             <Input className="col-span-3" id="name" {...register("name")} />
           </div>
 
           <div className="grid grid-cols-4 items-center gap-4">
             <Label className="text-right" htmlFor="description">
-              Descrição
+              Description
             </Label>
             <Textarea
               className="col-span-3"
@@ -124,11 +124,11 @@ export function StoreProfileDialog() {
         <DialogFooter>
           <DialogClose asChild>
             <Button variant="ghost" type="button">
-              Cancelar
+              Cancel
             </Button>
           </DialogClose>
           <Button type="submit" variant="default" disabled={isSubmitting}>
-            Salvar
+            Save
           </Button>
         </DialogFooter>
       </form>
