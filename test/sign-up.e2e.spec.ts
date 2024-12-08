@@ -20,7 +20,7 @@ test("sign up forcing bad request", async ({ page }) => {
     waitUntil: "networkidle",
   });
 
-  await page.getByLabel("Restaurant name").fill("Big Pizza");
+  await page.getByLabel("Restaurant name").fill("Bad Name");
   await page.getByLabel("Manager name").fill("John Doe");
   await page.getByLabel("Phone").fill("1234567");
   await page.getByLabel("Email").fill("johndoe@email.com");
