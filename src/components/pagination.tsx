@@ -47,7 +47,7 @@ export function Pagination({
             onClick={() => onPageChange(pageIndex - 1)}
             variant="outline"
             className="h-8 w-8 p-0"
-            disabled={pageIndex === pages - 1}
+            disabled={pageIndex === 0}
             aria-label="Previous page"
           >
             <ChevronLeft className="h-4 w-4" />
@@ -58,7 +58,7 @@ export function Pagination({
             onClick={() => onPageChange(pageIndex + 1)}
             variant="outline"
             className="h-8 w-8 p-0"
-            disabled={pageIndex === pages + 1}
+            disabled={pageIndex === pages - 1}
             aria-label="Next page"
           >
             <ChevronRight className="h-4 w-4" />
