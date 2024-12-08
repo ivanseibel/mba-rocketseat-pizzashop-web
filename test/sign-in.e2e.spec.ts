@@ -1,9 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 test("sign in successfully", async ({ page }) => {
-  await page.goto("/sign-in", {
-    waitUntil: "networkidle",
-  });
+  await page.goto("/sign-in");
 
   await page.getByLabel("Email").fill("johndoe@email.com");
   await page.getByRole("button", { name: "Sign in" }).click();
@@ -26,7 +24,6 @@ test("sign in with wrong credentials", async ({ page }) => {
   await expect(toast).toBeVisible();
 });
 
-// navigate to sign-up page
 test("navigate to sign-up page", async ({ page }) => {
   await page.goto("/sign-in", {
     waitUntil: "networkidle",
