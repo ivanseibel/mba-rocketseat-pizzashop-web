@@ -6,8 +6,11 @@ import { getMonthCanceledOrdersAmountMock } from "./get-month-canceled-orders-am
 import { getMonthOrdersAmountMock } from "./get-month-orders-amount-mock";
 import { getMonthRevenueMock } from "./get-month-revenue-mock";
 import { getPopularProductsMock } from "./get-popular-products-mock";
+import { getProfileMock } from "./get-profile-mock";
+import { getRestaurantMock } from "./get-restaurant-mock";
 import { signInMock } from "./sign-in-mock";
 import { signUpMock } from "./sign-up-mock";
+import { updateProfileMock } from "./update-profile-mock";
 
 export const worker = setupWorker(
   signInMock,
@@ -18,6 +21,9 @@ export const worker = setupWorker(
   getMonthRevenueMock,
   getDailyRevenueInPeriodMock,
   getPopularProductsMock,
+  getRestaurantMock,
+  getProfileMock,
+  updateProfileMock,
 );
 
 export async function enableMSW() {
