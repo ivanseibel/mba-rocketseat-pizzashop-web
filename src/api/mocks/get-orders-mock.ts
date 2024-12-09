@@ -21,6 +21,15 @@ const orders: Orders = Array.from({ length: 60 }).map((_, index) => ({
   total: Math.floor(Math.random() * 1000),
 }));
 
+// Add one order with fixed customer name
+orders.push({
+  orderId: "order-61",
+  customerName: "John Doe",
+  status: "pending",
+  createdAt: new Date(),
+  total: 100,
+});
+
 export const getOrdersMock = http.get<never, never, GetOrdersResponse>(
   "/orders",
   async ({ request }) => {
