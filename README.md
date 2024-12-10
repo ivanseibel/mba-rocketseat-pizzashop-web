@@ -1,78 +1,101 @@
-# Restaurant Metrics Dashboard
+# Front-End Dashboard Project
 
-This is a study project built as part of an MBA in Web Development, focusing on the fundamentals of React and dashboard implementation. The project provides restaurant owners with a complete tool to manage their businesses within delivery applications, like iFood.
+## Screenshots
 
-## Features
+| ![Screenshot 1](screenshots/screenshot-01.png) | ![Screenshot 2](screenshots/screenshot-03.png) |
+| ---------------------------------------------- | ---------------------------------------------- |
+| ![Screenshot 3](screenshots/screenshot-02.png) | ![Screenshot 4](screenshots/screenshot-04.png) |
 
-- **Metrics Overview**: Track key metrics such as daily and monthly orders.
-- **Order Management**: View detailed order information, update order status, and cancel orders where applicable.
-- **Profile Management**: Update the restaurant's profile with live feedback using HTTP cache updates.
-- **Authentication**: Utilizes passwordless login through Magic Link, simplifying the sign-in process.
-- **Interactive UI**: Features light and dark themes, skeleton screens, loading states, and pagination for an optimal user experience.
 
-## Tech Stack
+This project is a study initiative to practice software engineering concepts focused on front-end development using React and modern tools from the JavaScript ecosystem. It aims to develop an interactive dashboard with diverse features, promoting the understanding of best practices and related technologies.
 
-- **React**: Built with pure React to understand the framework without the use of additional state management tools.
-- **React Query**: Handles data fetching, caching, and state synchronization.
-- **Tailwind CSS**: Used for styling to ensure a consistent and responsive UI.
+## Objective
 
-## Getting Started
+Explore and practice essential concepts in front-end projects, such as:
 
-To run this project locally, follow these steps:
+- State and data management.
+- Integration with APIs and request handling.
+- Creating responsive and accessible interfaces.
+- Using tests to ensure code quality.
 
-### Prerequisites
+## Technologies Used
 
-- Node.js >= 16
-- npm or yarn
+- **React**: Main library for building the user interface.
+- **TypeScript**: To enhance code safety and readability.
+- **Tailwind CSS**: For quick and responsive styling.
+- **Vite**: Build tool for modern front-end applications.
+- **Mock Service Worker (MSW)**: To mock API calls during development and testing.
+- **Vitest**: For unit and integration tests.
+
+## Main Features
+
+1. **Metrics Dashboard**
+   - Visualization of daily and monthly metrics.
+   - Order management with real-time status updates.
+
+2. **User Management**
+   - Secure authentication.
+   - Profile updates.
+
+3. **Customizable Interface**
+   - Support for light and dark themes.
+   - Modular componentization for code reuse.
+
+## Project Structure
+
+- **src/components**: Reusable UI components.
+- **src/pages**: Main application pages.
+- **src/api**: Functions for API communication.
+- **src/mocks**: Mock implementation for tests.
+- **src/styles**: Base styling files and Tailwind CSS configurations.
+
+## Local Setup
+
+### Requirements
+
+- Node.js >= 18.x
+- pnpm (or npm/yarn)
 
 ### Installation
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/restaurant-metrics-dashboard.git
+   git@github.com:ivanseibel/mba-rocketseat-pizzashop-web.git
+   cd mba-rocketseat-pizzashop-web
    ```
 
-2. Navigate into the project directory:
+2. Install dependencies:
    ```bash
-   cd restaurant-metrics-dashboard
+   pnpm install
    ```
 
-3. Install dependencies:
-   ```bash
-   npm install
-   # or
-   yarn install
-   ```
+3. Configure environment variables:
+   - Copy the `.env.local.example` file to `.env.local` and adjust the values as needed.
 
 4. Start the development server:
    ```bash
-   npm start
-   # or
-   yarn start
+   pnpm dev
    ```
 
-5. Open your browser and navigate to `http://localhost:5174`.
+5. Access the application at `http://localhost:5173`.
 
-## Project Structure
+## Tests
 
-- **src/components**: Reusable UI components.
-- **src/pages**: Application pages like login, metrics, and order management.
-- **src/hooks**: Custom hooks for data fetching and business logic.
-- **src/services**: API service logic.
+To run the tests:
 
-## Contributing
+```bash
+pnpm test
+```
 
-This is a study project, but contributions are welcome for improvement. Feel free to fork the repository and open a pull request.
+The tests cover components, integrations, and main features.
 
 ## License
 
-This project is open-sourced under the MIT License.
+This project is licensed under the terms of the MIT license. See the `LICENSE` file for more details.
 
 ---
 
-### Note
+### Notes
 
-The backend API is provided as part of the course. For a complete implementation, refer to the JavaScript backend trail within the course series.
-
-Happy coding!
+This project uses a mock API to simulate functionalities. Ensure to follow the instructions to properly configure the mocks to avoid errors during development and testing.
 
